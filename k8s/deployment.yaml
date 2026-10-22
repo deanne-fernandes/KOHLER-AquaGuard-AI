@@ -1,0 +1,20 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kohler-aquaguard
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: kohler-aquaguard
+  template:
+    metadata:
+      labels:
+        app: kohler-aquaguard
+    spec:
+      containers:
+        - name: kohler-aquaguard
+          image: YOUR_DOCKERHUB_USERNAME/kohler-aquaguard-ai:latest
+          ports:
+            - containerPort: 8501
