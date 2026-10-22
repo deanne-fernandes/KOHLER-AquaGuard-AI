@@ -15,6 +15,6 @@ spec:
     spec:
       containers:
         - name: kohler-aquaguard
-          image: YOUR_DOCKERHUB_USERNAME/kohler-aquaguard-ai:latest
+          image: deannefernandes/kohler-aquaguard-ai:latest
           ports:
             - containerPort: 8501
