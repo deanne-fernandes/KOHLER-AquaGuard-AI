@@ -3,7 +3,7 @@ pipeline {
     agent any
 
     environment {
-        IMAGE = "YOUR_DOCKERHUB_USERNAME/kohler-aquaguard-ai:${BUILD_NUMBER}"
+        IMAGE = "deannefernandes/kohler-aquaguard-ai:${BUILD_NUMBER}"
     }
 
     stages {
