@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 
 st.set_page_config(
-    page_title="KOHLER AquaGuard AI",
+    page_title="KOHLER AquaGuard AI - Version 2",
     page_icon="💧",
     layout="wide"
 )
@@ -171,7 +171,7 @@ total_flow = df["water_flow"].sum()
 # HEADER
 # -------------------------------------------------
 
-st.title("💧 KOHLER AquaGuard AI")
+st.title("💧 KOHLER AquaGuard AI - Version 2")
 
 st.subheader(
     "Smart Facility & Water Sustainability Manager"
