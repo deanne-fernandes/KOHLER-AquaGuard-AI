@@ -1,15 +1,52 @@
 pipeline {
-  FROM python:3.12-slim
+    agent any
 
-WORKDIR /app
+    environment {
+        DOCKER_IMAGE = 'areejrehan/aquaguard-ai'
+        DOCKER_CREDENTIALS = credentials('dockerhub-credentials')
+    }
 
-COPY requirements.txt .
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
 
-RUN pip install --no-cache-dir -r requirements.txt
+        stage('Build and Test') {
+            steps {
+                sh 'python3 -m py_compile app.py'
+            }
+        }
 
-COPY . .
+        stage('Docker Build') {
+            steps {
+                sh 'docker build -t $DOCKER_IMAGE:$BUILD_NUMBER .'
+            }
+        }
 
-EXPOSE 8501
+        stage('Push Image') {
+            steps {
+                sh 'echo "$DOCKER_CREDENTIALS_PSW" | docker login -u "$DOCKER_CREDENTIALS_USR" --password-stdin'
+                sh 'docker push $DOCKER_IMAGE:$BUILD_NUMBER'
+            }
+        }
 
-CMD ["python", "-m", "streamlit", "run", "app.py", "--server.address=0.0.0.0", "--server.port=8501"]
-  }
+        stage('Deploy to Minikube') {
+            steps {
+                sh "sed -i 's|image: areejrehan/aquaguard-ai:.*|image: areejrehan/aquaguard-ai:${BUILD_NUMBER}|' k8s/deployment.yaml"
+                sh 'kubectl apply -f k8s/deployment.yaml'
+                sh 'kubectl apply -f k8s/service.yaml'
+                sh 'kubectl rollout status deployment/aquaguard-deployment --timeout=120s'
+            }
+        }
+
+        stage('Verification') {
+            steps {
+                sh 'kubectl get pods'
+                sh 'kubectl get deployments'
+                sh 'kubectl get services'
+            }
+        }
+    }
+}
