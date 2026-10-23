@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aquaguard-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aquaguard
+  template:
+    metadata:
+      labels:
+        app: aquaguard
+    spec:
+      containers:
+        - name: aquaguard
+          image: areejrehan/aquaguard-ai:v1
+          ports:
+            - containerPort: 8501
